@@ -1,0 +1,202 @@
+[
+  {
+    "id": "cat-001",
+    "slug": "restauration",
+    "name": "Restauration & Menus",
+    "description": "Flyers, menus et visuels pour restaurants, fast-foods, traiteurs et bars",
+    "icon": "🍽️",
+    "color": "#f59e0b",
+    "gradient": "from-orange-500 to-red-500",
+    "designCount": 24
+  },
+  {
+    "id": "cat-002",
+    "slug": "reseaux-sociaux",
+    "name": "Réseaux Sociaux",
+    "description": "Posts, stories, bannières et couvertures pour Facebook, Instagram, TikTok",
+    "icon": "📱",
+    "color": "#8b5cf6",
+    "gradient": "from-violet-500 to-pink-500",
+    "designCount": 38
+  },
+  {
+    "id": "cat-003",
+    "slug": "banque-finance",
+    "name": "Banque & Finance",
+    "description": "Visuels professionnels pour institutions financières, microfinances et caisses",
+    "icon": "🏦",
+    "color": "#0ea5e9",
+    "gradient": "from-sky-500 to-blue-600",
+    "designCount": 18
+  },
+  {
+    "id": "cat-004",
+    "slug": "graduation",
+    "name": "Cérémonie de Graduation",
+    "description": "Diplômes, invitations, banderoles et affiches pour remises de diplômes",
+    "icon": "🎓",
+    "color": "#7c3aed",
+    "gradient": "from-purple-600 to-indigo-600",
+    "designCount": 22
+  },
+  {
+    "id": "cat-005",
+    "slug": "mariage",
+    "name": "Mariage",
+    "description": "Faire-part, invitations, menus et décors visuels pour cérémonies de mariage",
+    "icon": "💍",
+    "color": "#ec4899",
+    "gradient": "from-pink-500 to-rose-500",
+    "designCount": 31
+  },
+  {
+    "id": "cat-006",
+    "slug": "bapteme-naissance",
+    "name": "Baptême & Naissance",
+    "description": "Visuels tendres pour cérémonies de baptême, naissances et baby showers",
+    "icon": "👶",
+    "color": "#06b6d4",
+    "gradient": "from-cyan-400 to-teal-500",
+    "designCount": 16
+  },
+  {
+    "id": "cat-007",
+    "slug": "festival",
+    "name": "Festivals",
+    "description": "Affiches, programmes et visuels vibrants pour festivals culturels et artistiques",
+    "icon": "🎪",
+    "color": "#f97316",
+    "gradient": "from-orange-400 to-yellow-500",
+    "designCount": 20
+  },
+  {
+    "id": "cat-008",
+    "slug": "concert-musique",
+    "name": "Concert & Musique",
+    "description": "Flyers, affiches et covers pour concerts, soirées musicales et artistes",
+    "icon": "🎵",
+    "color": "#ef4444",
+    "gradient": "from-red-500 to-pink-600",
+    "designCount": 27
+  },
+  {
+    "id": "cat-009",
+    "slug": "anniversaire",
+    "name": "Anniversaire",
+    "description": "Invitations, banderoles et visuels festifs pour toutes sortes d'anniversaires",
+    "icon": "🎂",
+    "color": "#eab308",
+    "gradient": "from-yellow-400 to-orange-500",
+    "designCount": 29
+  },
+  {
+    "id": "cat-010",
+    "slug": "conference-seminaire",
+    "name": "Conférence & Séminaire",
+    "description": "Badges, programmes, roll-ups et affiches pour événements professionnels",
+    "icon": "🎤",
+    "color": "#3b82f6",
+    "gradient": "from-blue-500 to-indigo-600",
+    "designCount": 15
+  },
+  {
+    "id": "cat-011",
+    "slug": "promotion-soldes",
+    "name": "Promotion & Soldes",
+    "description": "Flyers accrocheurs pour promotions, soldes, offres spéciales et lancements",
+    "icon": "🏷️",
+    "color": "#22c55e",
+    "gradient": "from-green-500 to-emerald-600",
+    "designCount": 33
+  },
+  {
+    "id": "cat-012",
+    "slug": "sport",
+    "name": "Sport & Compétition",
+    "description": "Affiches, maillots numériques et visuels dynamiques pour événements sportifs",
+    "icon": "⚽",
+    "color": "#10b981",
+    "gradient": "from-emerald-500 to-teal-600",
+    "designCount": 21
+  },
+  {
+    "id": "cat-013",
+    "slug": "carte-de-visite",
+    "name": "Carte de Visite Numérique",
+    "description": "Cartes de visite modernes, e-cartes et profils numériques pour professionnels",
+    "icon": "💼",
+    "color": "#6366f1",
+    "gradient": "from-indigo-500 to-violet-600",
+    "designCount": 19
+  },
+  {
+    "id": "cat-014",
+    "slug": "youtube-podcast",
+    "name": "YouTube & Podcast",
+    "description": "Miniatures, bannières de chaîne, couvertures et visuels pour créateurs de contenu",
+    "icon": "🎬",
+    "color": "#dc2626",
+    "gradient": "from-red-600 to-rose-600",
+    "designCount": 23
+  },
+  {
+    "id": "cat-015",
+    "slug": "mode-fashion",
+    "name": "Mode & Fashion",
+    "description": "Lookbooks, affiches et visuels tendance pour marques de mode et boutiques",
+    "icon": "👗",
+    "color": "#d946ef",
+    "gradient": "from-fuchsia-500 to-purple-600",
+    "designCount": 25
+  },
+  {
+    "id": "cat-016",
+    "slug": "immobilier",
+    "name": "Immobilier",
+    "description": "Flyers, affiches et visuels pour agences immobilières et promoteurs",
+    "icon": "🏡",
+    "color": "#0891b2",
+    "gradient": "from-cyan-600 to-blue-700",
+    "designCount": 14
+  },
+  {
+    "id": "cat-017",
+    "slug": "sante-bienetre",
+    "name": "Santé & Bien-être",
+    "description": "Visuels pour cliniques, pharmacies, salles de sport et centres de bien-être",
+    "icon": "💊",
+    "color": "#16a34a",
+    "gradient": "from-green-600 to-teal-600",
+    "designCount": 17
+  },
+  {
+    "id": "cat-018",
+    "slug": "ong-association",
+    "name": "ONG & Association",
+    "description": "Affiches de sensibilisation, rapports visuels et campagnes pour organisations",
+    "icon": "🤝",
+    "color": "#ca8a04",
+    "gradient": "from-yellow-600 to-amber-600",
+    "designCount": 12
+  },
+  {
+    "id": "cat-019",
+    "slug": "tourisme-voyage",
+    "name": "Tourisme & Voyage",
+    "description": "Affiches, brochures et visuels attrayants pour agences de voyage et destinations",
+    "icon": "✈️",
+    "color": "#0284c7",
+    "gradient": "from-sky-600 to-blue-700",
+    "designCount": 18
+  },
+  {
+    "id": "cat-020",
+    "slug": "formation-atelier",
+    "name": "Formation & Atelier",
+    "description": "Flyers et visuels professionnels pour centres de formation, ateliers et coaching",
+    "icon": "📚",
+    "color": "#7c3aed",
+    "gradient": "from-violet-600 to-purple-700",
+    "designCount": 16
+  }
+]
