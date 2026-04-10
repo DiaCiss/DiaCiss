@@ -37,6 +37,10 @@ body {
 ::-webkit-scrollbar-track { background: #F0EDE8; }
 ::-webkit-scrollbar-thumb { background: #E8501E; border-radius: 10px; }
 
+/* Hide scrollbar for horizontal scroll (keep functionality) */
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+
 /* Card */
 .card {
   background: var(--card);

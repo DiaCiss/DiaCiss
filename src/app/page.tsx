@@ -1,20 +1,24 @@
-import { getAllCategories, getFeaturedDesigns } from '@/lib/data'
+import { getAllCategories, getAllDesigns } from '@/lib/data'
 import HeroSection from '@/components/home/HeroSection'
-import CategorySection from '@/components/home/CategorySection'
-import FeaturedDesigns from '@/components/home/FeaturedDesigns'
+import HomeCatalog from '@/components/home/HomeCatalog'
 import HowItWorks from '@/components/home/HowItWorks'
-import DesignersSpotlight from '@/components/home/DesignersSpotlight'
+import type { Design } from '@/types'
 
 export default function HomePage() {
   const categories = getAllCategories()
-  const featuredDesigns = getFeaturedDesigns()
+  const allDesigns = getAllDesigns()
+
+  // Regrouper les designs par catégorie
+  const designsByCategory = allDesigns.reduce<Record<string, Design[]>>((acc, design) => {
+    if (!acc[design.categorySlug]) acc[design.categorySlug] = []
+    acc[design.categorySlug].push(design)
+    return acc
+  }, {})
 
   return (
     <>
       <HeroSection />
-      <CategorySection categories={categories} />
-      <FeaturedDesigns designs={featuredDesigns} />
-      <DesignersSpotlight />
+      <HomeCatalog categories={categories} designsByCategory={designsByCategory} />
       <HowItWorks />
     </>
   )
