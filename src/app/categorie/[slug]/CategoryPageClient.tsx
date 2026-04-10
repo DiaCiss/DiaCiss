@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
-import { ChevronLeft, Zap, RefreshCw, Crown, Filter } from 'lucide-react'
+import { ChevronRight, Plus } from 'lucide-react'
 import type { Category, Design, PricingTier } from '@/types'
 import { PRICING_TIERS } from '@/types'
 import { formatPrice } from '@/lib/utils'
@@ -14,151 +14,149 @@ interface Props {
   designs: Design[]
 }
 
-const tierIcons = { basic: Zap, intermediate: RefreshCw, premium: Crown }
+type Filter = 'all' | PricingTier
 
 export default function CategoryPageClient({ category, designs }: Props) {
-  const [selectedTier, setSelectedTier] = useState<PricingTier | 'all'>('all')
+  const [filter, setFilter] = useState<Filter>('all')
 
-  const filtered = selectedTier === 'all'
-    ? designs
-    : designs.filter((d) => d.tier === selectedTier)
+  const filtered = filter === 'all' ? designs : designs.filter((d) => d.tier === filter)
 
-  const tiers: (PricingTier | 'all')[] = ['all', 'basic', 'intermediate', 'premium']
+  const filters: { key: Filter; label: string }[] = [
+    { key: 'all', label: 'ALL DESIGNS' },
+    { key: 'basic', label: `BASIQUE (${formatPrice(PRICING_TIERS.basic.price)})` },
+    { key: 'intermediate', label: `INTERMÉDIAIRE (${formatPrice(PRICING_TIERS.intermediate.price)})` },
+    { key: 'premium', label: `PREMIUM (${formatPrice(PRICING_TIERS.premium.price)})` },
+  ]
 
   return (
-    <div className="min-h-screen pt-20">
-      {/* Hero banner */}
-      <div className={`relative py-16 overflow-hidden bg-gradient-to-br ${category.gradient} bg-opacity-10`}>
-        <div className="absolute inset-0 bg-dark-950/85" />
-        <div className="absolute inset-0 pointer-events-none">
-          <div className={`absolute inset-0 opacity-15 bg-gradient-to-br ${category.gradient}`} />
-        </div>
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Link
-            href="/categories"
-            className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mb-6 group"
-          >
-            <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            Toutes les catégories
-          </Link>
-
-          <div className="flex items-center gap-4">
-            <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${category.gradient} flex items-center justify-center text-3xl shadow-2xl`}>
-              {category.icon}
-            </div>
-            <div>
-              <h1 className="text-3xl md:text-4xl font-black text-white">{category.name}</h1>
-              <p className="text-gray-400 mt-1 max-w-lg">{category.description}</p>
-              <div className="mt-2 text-sm text-gray-500">{category.designCount} designs disponibles</div>
-            </div>
+    <div className="min-h-screen pt-16 flex">
+      {/* Sidebar */}
+      <aside className="hidden lg:flex flex-col w-60 flex-shrink-0 sidebar sticky top-16 h-[calc(100vh-64px)] overflow-y-auto py-6 px-4">
+        <div className="mb-6">
+          <div className="text-xs font-black uppercase tracking-widest text-sand-400 mb-1">
+            {category.name}
           </div>
+          <div className="text-xs text-sand-400 uppercase tracking-widest">Creative Assets</div>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Pricing tiers explanation */}
-        <div className="mb-10">
-          <h2 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
-            <Filter className="w-5 h-5 text-primary-400" />
-            Choisissez votre niveau
-          </h2>
-          <p className="text-sm text-gray-400 mb-6">Filtrez les designs par niveau de qualité et budget</p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-            {/* All */}
+        <nav className="space-y-1 flex-1">
+          {filters.map(({ key, label }) => (
             <button
-              onClick={() => setSelectedTier('all')}
-              className={`p-4 rounded-2xl border-2 transition-all text-left ${
-                selectedTier === 'all'
-                  ? 'bg-white/10 border-white/30'
-                  : 'glass border-white/10 hover:border-white/20'
+              key={key}
+              onClick={() => setFilter(key)}
+              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-bold text-left transition-all ${
+                filter === key
+                  ? 'bg-primary-50 text-primary-500 border-l-2 border-primary-500'
+                  : 'text-sand-600 hover:bg-sand-100 hover:text-sand-900'
               }`}
             >
-              <div className="font-bold text-white mb-1">Tous les niveaux</div>
-              <div className="text-xs text-gray-400">1 000 – 5 000 FCFA</div>
-              <div className="mt-2 text-xs text-gray-500">{designs.length} designs</div>
+              <span className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 ${
+                filter === key ? 'border-primary-500 bg-primary-500' : 'border-sand-300'
+              }`}>
+                {filter === key && <span className="w-2 h-2 bg-white rounded-sm" />}
+              </span>
+              {label}
             </button>
+          ))}
+        </nav>
 
-            {/* Tier buttons */}
-            {(['basic', 'intermediate', 'premium'] as PricingTier[]).map((tier) => {
-              const config = PRICING_TIERS[tier]
-              const Icon = tierIcons[tier]
-              const count = designs.filter((d) => d.tier === tier).length
+        <div className="mt-6">
+          <button className="w-full px-4 py-3 btn-primary rounded-xl text-sm flex items-center justify-center gap-2">
+            <Plus className="w-4 h-4" />
+            Post a Request
+          </button>
+        </div>
+      </aside>
 
-              return (
-                <button
-                  key={tier}
-                  onClick={() => setSelectedTier(tier)}
-                  className={`p-4 rounded-2xl border-2 transition-all text-left group ${
-                    selectedTier === tier
-                      ? `${config.bgColor} ${config.borderColor}`
-                      : 'glass border-white/10 hover:border-white/20'
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${config.color} flex items-center justify-center`}>
-                      <Icon className="w-4 h-4 text-white" />
-                    </div>
-                    <span className={`text-lg font-black ${selectedTier === tier ? config.textColor : 'text-white'}`}>
-                      {formatPrice(config.price)}
-                    </span>
-                  </div>
-                  <div className={`font-bold text-sm ${selectedTier === tier ? config.textColor : 'text-white'}`}>
-                    {config.label}
-                  </div>
-                  <div className="text-xs text-gray-400 mt-1">
-                    {config.maxRetouches} retouches · {config.deliveryTime}
-                  </div>
-                  <div className="text-xs text-gray-500 mt-1">{count} designs</div>
-                </button>
-              )
-            })}
-          </div>
+      {/* Main */}
+      <div className="flex-1 min-w-0 py-6 px-4 md:px-6 lg:px-8">
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-1.5 text-xs text-sand-400 mb-6">
+          <Link href="/" className="hover:text-sand-700">Accueil</Link>
+          <ChevronRight className="w-3 h-3" />
+          <Link href="/categories" className="hover:text-sand-700">Catégories</Link>
+          <ChevronRight className="w-3 h-3" />
+          <span className="text-sand-700 font-semibold">{category.name}</span>
         </div>
 
-        {/* Designs grid */}
-        <div>
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="font-semibold text-white">
-              {filtered.length} design{filtered.length > 1 ? 's' : ''}
-              {selectedTier !== 'all' && ` · Niveau ${PRICING_TIERS[selectedTier as PricingTier].label}`}
-            </h3>
+        {/* Category header card */}
+        <div className="rounded-2xl p-6 mb-8 flex items-center justify-between" style={{ background: '#FAF0E8' }}>
+          <div>
+            <h1 className="text-2xl md:text-3xl font-black text-sand-900 mb-1">{category.name}</h1>
+            <p className="text-sand-500 text-sm max-w-md">{category.description}</p>
           </div>
-
-          <AnimatePresence mode="wait">
-            {filtered.length > 0 ? (
-              <motion.div
-                key={selectedTier}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-              >
-                {filtered.map((design, i) => (
-                  <DesignCard key={design.id} design={design} index={i} />
-                ))}
-              </motion.div>
-            ) : (
-              <motion.div
-                key="empty"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-center py-20"
-              >
-                <div className="text-4xl mb-4">🎨</div>
-                <p className="text-gray-400">Aucun design disponible pour ce niveau dans cette catégorie.</p>
-                <button
-                  onClick={() => setSelectedTier('all')}
-                  className="mt-4 text-primary-400 hover:text-primary-300 text-sm font-semibold"
-                >
-                  Voir tous les niveaux
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <div className="text-5xl opacity-60 hidden sm:block">{category.icon}</div>
         </div>
+
+        {/* Mobile filters */}
+        <div className="flex lg:hidden gap-2 overflow-x-auto pb-2 mb-6">
+          {filters.map(({ key, label }) => (
+            <button
+              key={key}
+              onClick={() => setFilter(key)}
+              className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                filter === key
+                  ? 'bg-primary-500 text-white'
+                  : 'bg-white border border-sand-200 text-sand-600'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {/* Grid */}
+        <AnimatePresence mode="wait">
+          {filtered.length > 0 ? (
+            <motion.div
+              key={filter}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5"
+            >
+              {filtered.map((design, i) => (
+                <DesignCard key={design.id} design={design} index={i} />
+              ))}
+
+              {/* Design sur-mesure CTA */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: filtered.length * 0.06 }}
+              >
+                <div className="card border-dashed border-2 border-sand-200 flex flex-col items-center justify-center p-8 text-center min-h-[200px] hover:border-primary-300 transition-all group cursor-pointer">
+                  <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-primary-500 transition-colors">
+                    <Plus className="w-5 h-5 text-primary-500 group-hover:text-white transition-colors" />
+                  </div>
+                  <div className="font-black text-sand-900 mb-1">Design Sur-Mesure</div>
+                  <p className="text-xs text-sand-400 mb-4">
+                    Vous ne trouvez pas votre bonheur ? Demandez un design personnalisé à nos experts.
+                  </p>
+                  <button className="px-4 py-2 btn-primary rounded-xl text-xs">
+                    Lancer une demande
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="empty"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-20"
+            >
+              <div className="text-4xl mb-4">{category.icon}</div>
+              <p className="text-sand-400 mb-4">Aucun design dans ce niveau pour cette catégorie.</p>
+              <button
+                onClick={() => setFilter('all')}
+                className="text-primary-500 text-sm font-semibold hover:text-primary-600"
+              >
+                Voir tous les designs
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   )

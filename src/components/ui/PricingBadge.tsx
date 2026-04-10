@@ -1,72 +1,70 @@
 import { PRICING_TIERS, type PricingTier } from '@/types'
 import { formatPrice } from '@/lib/utils'
-import { RefreshCw, Clock, Zap } from 'lucide-react'
+import { Clock, RefreshCw, FileText } from 'lucide-react'
 
-interface PricingBadgeProps {
-  tier: PricingTier
-  size?: 'sm' | 'md' | 'lg'
-}
-
-export default function PricingBadge({ tier, size = 'md' }: PricingBadgeProps) {
-  const config = PRICING_TIERS[tier]
-
-  const sizeClasses = {
-    sm: 'px-2 py-1 text-xs',
-    md: 'px-3 py-1.5 text-sm',
-    lg: 'px-4 py-2 text-base',
-  }
-
-  return (
-    <div className={`inline-flex items-center gap-2 ${sizeClasses[size]} rounded-xl ${config.bgColor} ${config.textColor} border ${config.borderColor} font-semibold`}>
-      <span>{config.label}</span>
-      <span className="font-black">{formatPrice(config.price)}</span>
-    </div>
-  )
-}
-
-interface PricingCardProps {
+interface TierCardProps {
   tier: PricingTier
   selected?: boolean
   onClick?: () => void
+  highlight?: boolean
 }
 
-export function PricingCard({ tier, selected, onClick }: PricingCardProps) {
+export function TierCard({ tier, selected, onClick, highlight }: TierCardProps) {
   const config = PRICING_TIERS[tier]
-  const icons = { basic: Zap, intermediate: RefreshCw, premium: Clock }
-  const Icon = icons[tier]
 
   return (
-    <button
+    <div
       onClick={onClick}
-      className={`w-full p-4 rounded-2xl border-2 transition-all duration-200 text-left group ${
-        selected
-          ? `${config.bgColor} ${config.borderColor} shadow-lg`
-          : 'glass border-white/10 hover:border-white/20'
+      className={`relative rounded-2xl p-4 border-2 cursor-pointer transition-all ${
+        highlight
+          ? 'bg-primary-500 border-primary-500 text-white'
+          : selected
+          ? 'border-primary-500 bg-primary-50'
+          : 'border-sand-200 bg-white hover:border-primary-200'
       }`}
     >
-      <div className="flex items-start justify-between mb-3">
-        <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${config.color} flex items-center justify-center shadow-md`}>
-          <Icon className="w-4 h-4 text-white" />
+      {highlight && (
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-sand-900 text-white text-xs font-bold rounded-full whitespace-nowrap">
+          MEILLEUR CHOIX
         </div>
-        <div className={`text-2xl font-black ${selected ? config.textColor : 'text-white'}`}>
+      )}
+
+      <div className="flex items-start justify-between mb-3">
+        <div className={`font-bold text-base ${highlight ? 'text-white' : 'text-sand-900'}`}>
+          {config.label}
+        </div>
+        <div className={`font-black text-xl ${highlight ? 'text-white' : 'text-primary-500'}`}>
           {formatPrice(config.price)}
         </div>
       </div>
 
-      <div className={`font-bold text-base mb-1 ${selected ? config.textColor : 'text-white'}`}>
-        Niveau {config.label}
-      </div>
-
-      <div className="space-y-1.5 mt-3">
-        <div className="flex items-center gap-2 text-xs text-gray-400">
+      <div className={`space-y-1.5 text-sm ${highlight ? 'text-orange-100' : 'text-sand-500'}`}>
+        <div className="flex items-center gap-2">
           <Clock className="w-3.5 h-3.5 flex-shrink-0" />
-          Livraison en {config.deliveryTime}
+          {config.deliveryTime} delivery
         </div>
-        <div className="flex items-center gap-2 text-xs text-gray-400">
+        <div className="flex items-center gap-2">
           <RefreshCw className="w-3.5 h-3.5 flex-shrink-0" />
-          {config.maxRetouches} retouches incluses
+          {config.maxRetouches} révisions
+        </div>
+        <div className="flex items-center gap-2">
+          <FileText className="w-3.5 h-3.5 flex-shrink-0" />
+          {tier === 'basic' ? 'PNG/PDF' : tier === 'intermediate' ? 'PNG/PDF/PSD' : 'PNG/PDF/PSD/AI'}
         </div>
       </div>
-    </button>
+    </div>
+  )
+}
+
+export default function PricingBadge({ tier }: { tier: PricingTier }) {
+  const config = PRICING_TIERS[tier]
+  const cls =
+    tier === 'premium' ? 'badge-premium' :
+    tier === 'intermediate' ? 'badge-inter' : 'badge-basic'
+
+  return (
+    <span className={`badge ${cls}`}>
+      {config.label} · {formatPrice(config.price)}
+    </span>
   )
 }

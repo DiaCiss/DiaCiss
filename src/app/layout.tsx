@@ -5,13 +5,13 @@ import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 
 export const metadata: Metadata = {
-  title: 'DiaCiss — Marketplace de Designs Créatifs',
+  title: 'EasilyDesign — Votre design pro en moins d\'une heure',
   description:
-    'Commandez des designs personnalisés de qualité pour tous vos événements et projets. Livraison en 1h par nos designers professionnels.',
+    'La première marketplace africaine de designs créatifs personnalisés. Livraison en 1h par nos designers professionnels.',
   keywords: 'design, graphisme, flyer, affiche, mariage, restaurant, réseaux sociaux, Afrique',
   openGraph: {
-    title: 'DiaCiss — Marketplace de Designs Créatifs',
-    description: 'Designs personnalisés livrés en 1 heure par des professionnels',
+    title: 'EasilyDesign — Votre design pro en moins d\'une heure',
+    description: 'Designs personnalisés livrés en 1 heure par des professionnels africains',
     type: 'website',
   },
 }
@@ -22,22 +22,13 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="fr" className="dark">
-      <body className="antialiased">
+    <html lang="fr">
+      <body className="antialiased bg-sand-50 text-sand-900">
         <div className="relative min-h-screen flex flex-col">
-          {/* Background ambient glow */}
-          <div className="fixed inset-0 pointer-events-none overflow-hidden">
-            <div className="absolute -top-40 -left-40 w-96 h-96 bg-primary-600/20 rounded-full blur-3xl" />
-            <div className="absolute top-1/3 -right-32 w-80 h-80 bg-accent-500/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-1/4 left-1/4 w-72 h-72 bg-primary-800/15 rounded-full blur-3xl" />
-          </div>
-
           <Navbar />
-
-          <main className="flex-1 relative z-10">
+          <main className="flex-1">
             {children}
           </main>
-
           <Footer />
         </div>
 
@@ -46,11 +37,12 @@ export default function RootLayout({
           toastOptions={{
             duration: 4000,
             style: {
-              background: 'rgba(15, 15, 25, 0.95)',
-              color: '#fff',
-              border: '1px solid rgba(124, 58, 237, 0.3)',
-              backdropFilter: 'blur(20px)',
+              background: '#fff',
+              color: '#1A1A1A',
+              border: '1px solid #E2DDD5',
               borderRadius: '12px',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+              fontSize: '14px',
             },
           }}
         />

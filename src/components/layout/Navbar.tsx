@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, ShoppingBag, MessageSquare, Search, Sparkles } from 'lucide-react'
+import { Menu, X, ShoppingBag, MessageSquare, Search, Bell } from 'lucide-react'
 import { useAppStore } from '@/lib/store'
 
 export default function Navbar() {
@@ -13,49 +13,39 @@ export default function Navbar() {
   const unreadCount = getUnreadCount()
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20)
+    const handleScroll = () => setIsScrolled(window.scrollY > 10)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   const navLinks = [
-    { href: '/', label: 'Accueil' },
-    { href: '/categories', label: 'Catégories' },
+    { href: '/categories', label: 'Browse' },
     { href: '/designers', label: 'Designers' },
-    { href: '/comment-ca-marche', label: 'Comment ça marche' },
+    { href: '/comment-ca-marche', label: 'Learn' },
   ]
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'glass border-b border-white/5 shadow-2xl'
-          : 'bg-transparent'
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
+        isScrolled ? 'bg-white border-b border-sand-200 shadow-sm' : 'bg-sand-50'
       }`}
     >
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 md:h-20">
+        <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="relative">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center shadow-lg group-hover:shadow-primary-500/40 transition-shadow">
-                <Sparkles className="w-5 h-5 text-white" />
-              </div>
-              <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-accent-400 animate-pulse" />
-            </div>
-            <span className="text-xl font-black tracking-tight">
-              <span className="text-white">Dia</span>
-              <span className="gradient-text">Ciss</span>
+          <Link href="/" className="flex items-center">
+            <span className="text-xl font-black tracking-tight text-primary-500">
+              Easily<span className="text-sand-900">Design</span>
             </span>
           </Link>
 
-          {/* Desktop nav links */}
+          {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white rounded-lg hover:bg-white/5 transition-all"
+                className="px-4 py-2 text-sm font-medium text-sand-700 hover:text-sand-900 rounded-lg hover:bg-sand-100 transition-all"
               >
                 {link.label}
               </Link>
@@ -64,44 +54,46 @@ export default function Navbar() {
 
           {/* Actions */}
           <div className="flex items-center gap-2">
-            <button className="hidden md:flex items-center justify-center w-9 h-9 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+            <button className="hidden md:flex items-center justify-center w-9 h-9 text-sand-500 hover:text-sand-900 hover:bg-sand-100 rounded-lg transition-all">
               <Search className="w-4 h-4" />
             </button>
 
             <Link
               href="/messages"
-              className="relative flex items-center justify-center w-9 h-9 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all"
+              className="relative flex items-center justify-center w-9 h-9 text-sand-500 hover:text-sand-900 hover:bg-sand-100 rounded-lg transition-all"
             >
-              <MessageSquare className="w-4 h-4" />
+              <Bell className="w-4 h-4" />
               {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-accent-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
-                  {unreadCount}
-                </span>
+                <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-primary-500 rounded-full border-2 border-sand-50" />
               )}
             </Link>
 
             <Link
               href="/commandes"
-              className="relative flex items-center justify-center w-9 h-9 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all"
+              className="relative flex items-center justify-center w-9 h-9 text-sand-500 hover:text-sand-900 hover:bg-sand-100 rounded-lg transition-all"
             >
               <ShoppingBag className="w-4 h-4" />
               {orders.length > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
-                  {orders.length}
-                </span>
+                <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-primary-500 rounded-full border-2 border-sand-50" />
               )}
             </Link>
 
             <Link
-              href="/categories"
-              className="hidden md:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 text-white text-sm font-semibold rounded-xl transition-all shadow-lg shadow-primary-500/25 hover:shadow-primary-500/40 hover:-translate-y-0.5"
+              href="/commandes"
+              className="hidden md:flex items-center gap-2 px-4 py-2 text-sand-600 hover:text-sand-900 text-sm font-medium rounded-lg hover:bg-sand-100 transition-all"
             >
-              Commander
+              Log In
             </Link>
 
-            {/* Mobile menu toggle */}
+            <Link
+              href="/categories"
+              className="hidden md:flex items-center px-5 py-2 btn-primary text-sm rounded-xl"
+            >
+              Get Started
+            </Link>
+
             <button
-              className="md:hidden flex items-center justify-center w-9 h-9 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all"
+              className="md:hidden flex items-center justify-center w-9 h-9 text-sand-500 hover:text-sand-900 hover:bg-sand-100 rounded-lg"
               onClick={() => setIsMobileOpen(!isMobileOpen)}
             >
               {isMobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -117,7 +109,7 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden glass border-t border-white/5"
+            className="md:hidden bg-white border-t border-sand-200"
           >
             <div className="px-4 py-4 space-y-1">
               {navLinks.map((link) => (
@@ -125,7 +117,7 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setIsMobileOpen(false)}
-                  className="block px-4 py-3 text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all"
+                  className="block px-4 py-3 text-sm font-medium text-sand-700 hover:text-sand-900 hover:bg-sand-100 rounded-lg transition-all"
                 >
                   {link.label}
                 </Link>
@@ -133,9 +125,9 @@ export default function Navbar() {
               <Link
                 href="/categories"
                 onClick={() => setIsMobileOpen(false)}
-                className="block px-4 py-3 mt-2 bg-gradient-to-r from-primary-600 to-primary-500 text-white text-sm font-semibold rounded-xl text-center"
+                className="block px-4 py-3 mt-2 btn-primary text-sm text-center rounded-xl"
               >
-                Commander un design
+                Get Started
               </Link>
             </div>
           </motion.div>
