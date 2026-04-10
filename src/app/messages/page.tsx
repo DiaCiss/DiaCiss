@@ -65,7 +65,8 @@ export default function MessagesPage() {
 
       <div className="flex-1 flex min-w-0 h-[calc(100vh-64px)]">
         {/* Conversation list */}
-        <div className="w-72 flex-shrink-0 border-r border-sand-200 bg-white flex flex-col">
+        <div className={`border-r border-sand-200 bg-white flex flex-col flex-shrink-0 ${selectedOrderId ? 'hidden lg:flex lg:w-72' : 'flex w-full lg:w-72'}`}>
+
           <div className="px-4 py-3 border-b border-sand-100">
             <h2 className="font-black text-sand-900 text-sm">Messages</h2>
           </div>
@@ -111,7 +112,7 @@ export default function MessagesPage() {
 
         {/* Chat area */}
         {selectedOrder ? (
-          <div className="flex-1 flex flex-col bg-sand-50 min-w-0">
+          <div className="flex-1 flex flex-col bg-sand-50 min-w-0 w-full lg:w-auto">
             {/* Chat header */}
             <div className="px-5 py-3 bg-white border-b border-sand-200 flex items-center gap-3">
               <div className="relative w-9 h-9 rounded-full overflow-hidden">
@@ -122,7 +123,13 @@ export default function MessagesPage() {
                 <div className="font-bold text-sand-900 text-sm">{selectedOrder.design.designer.name}</div>
                 <div className="text-xs text-green-500">En ligne · Designer</div>
               </div>
-              <div className="ml-auto text-xs text-sand-400">#{selectedOrder.id}</div>
+              <button
+                onClick={() => setSelectedOrderId(null)}
+                className="lg:hidden mr-2 text-xs text-primary-500 font-semibold"
+              >
+                ← Retour
+              </button>
+              <div className="ml-auto text-xs text-sand-400 hidden sm:block">#{selectedOrder.id}</div>
             </div>
 
             {/* Messages */}

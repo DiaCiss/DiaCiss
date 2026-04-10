@@ -3,6 +3,7 @@ import './globals.css'
 import { Toaster } from 'react-hot-toast'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
+import MobileBottomNav from '@/components/layout/MobileBottomNav'
 
 export const metadata: Metadata = {
   title: 'EasilyDesign — Votre design pro en moins d\'une heure',
@@ -26,10 +27,11 @@ export default function RootLayout({
       <body className="antialiased bg-sand-50 text-sand-900">
         <div className="relative min-h-screen flex flex-col">
           <Navbar />
-          <main className="flex-1">
+          <main className="flex-1 pb-16 lg:pb-0">
             {children}
           </main>
           <Footer />
+          <MobileBottomNav />
         </div>
 
         <Toaster

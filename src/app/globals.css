@@ -150,6 +150,11 @@ body {
 }
 .step-line.done { background: var(--primary); }
 
+/* Mobile safe area for bottom nav */
+.safe-area-inset-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
 @layer utilities {
   .text-balance { text-wrap: balance; }
 }
