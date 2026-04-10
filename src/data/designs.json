@@ -10,78 +10,54 @@
       "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=600&fit=crop&auto=format",
       "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=600&fit=crop&auto=format"
     ],
-    "designer": {
-      "id": "des-001",
-      "name": "Aminata Diallo",
-      "avatar": "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=100&h=100&fit=crop&auto=format",
-      "specialty": "Branding & Identité visuelle",
-      "rating": 4.9,
-      "completedOrders": 342
-    },
-    "tags": ["menu", "restaurant", "élégant", "gastronomie"],
+    "tags": ["menu", "restaurant", "élégant"],
     "dimensions": "A4 (21 x 29.7 cm)",
-    "format": ["PNG", "PDF"],
-    "deliveryTime": "1 heure",
+    "deliveryTime": "3 heures",
     "maxRetouches": 2,
     "rating": 4.7,
     "reviewCount": 89,
     "featured": true,
+    "isExclusive": false,
     "createdAt": "2024-01-15"
   },
   {
     "id": "d-002",
     "title": "Flyer Restaurant Moderne",
     "categorySlug": "restauration",
-    "tier": "intermediate",
+    "tier": "standard",
     "price": 3000,
     "imageUrl": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=400&fit=crop&auto=format",
     "previewImages": [
       "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=600&fit=crop&auto=format"
     ],
-    "designer": {
-      "id": "des-002",
-      "name": "Kofi Mensah",
-      "avatar": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop&auto=format",
-      "specialty": "Motion Design & Affiches",
-      "rating": 4.8,
-      "completedOrders": 218
-    },
-    "tags": ["flyer", "restaurant", "moderne", "promotion"],
+    "tags": ["flyer", "restaurant", "moderne"],
     "dimensions": "A5 (14.8 x 21 cm)",
-    "format": ["PNG", "PDF", "PSD"],
     "deliveryTime": "2 heures",
     "maxRetouches": 4,
     "rating": 4.8,
     "reviewCount": 124,
     "featured": true,
+    "isExclusive": false,
     "createdAt": "2024-02-20"
   },
   {
     "id": "d-003",
-    "title": "Pack Branding Restaurant Premium",
+    "title": "Affiche Restaurant Premium",
     "categorySlug": "restauration",
-    "tier": "premium",
-    "price": 5000,
+    "tier": "exclusive",
+    "price": 10000,
     "imageUrl": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&h=400&fit=crop&auto=format",
     "previewImages": [
       "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&h=600&fit=crop&auto=format"
     ],
-    "designer": {
-      "id": "des-001",
-      "name": "Aminata Diallo",
-      "avatar": "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=100&h=100&fit=crop&auto=format",
-      "specialty": "Branding & Identité visuelle",
-      "rating": 4.9,
-      "completedOrders": 342
-    },
-    "tags": ["branding", "restaurant", "premium", "complet"],
-    "dimensions": "Multiples formats",
-    "format": ["PNG", "PDF", "PSD", "AI"],
-    "deliveryTime": "3 heures",
-    "maxRetouches": 10,
+    "tags": ["restaurant", "exclusif", "premium"],
+    "dimensions": "A3 (29.7 x 42 cm)",
+    "deliveryTime": "1 heure",
+    "maxRetouches": 5,
     "rating": 5.0,
-    "reviewCount": 67,
+    "reviewCount": 12,
     "featured": true,
+    "isExclusive": true,
     "createdAt": "2024-03-01"
   },
   {
@@ -94,22 +70,14 @@
     "previewImages": [
       "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=800&h=600&fit=crop&auto=format"
     ],
-    "designer": {
-      "id": "des-003",
-      "name": "Fatou Traoré",
-      "avatar": "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=100&h=100&fit=crop&auto=format",
-      "specialty": "Réseaux Sociaux & Digital",
-      "rating": 4.9,
-      "completedOrders": 456
-    },
-    "tags": ["instagram", "post", "entreprise", "professionnel"],
+    "tags": ["instagram", "post", "entreprise"],
     "dimensions": "1080 x 1080 px",
-    "format": ["PNG", "JPG"],
-    "deliveryTime": "1 heure",
+    "deliveryTime": "3 heures",
     "maxRetouches": 2,
     "rating": 4.6,
     "reviewCount": 203,
     "featured": true,
+    "isExclusive": false,
     "createdAt": "2024-01-10"
   },
   {
@@ -122,22 +90,14 @@
     "previewImages": [
       "https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?w=800&h=600&fit=crop&auto=format"
     ],
-    "designer": {
-      "id": "des-003",
-      "name": "Fatou Traoré",
-      "avatar": "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=100&h=100&fit=crop&auto=format",
-      "specialty": "Réseaux Sociaux & Digital",
-      "rating": 4.9,
-      "completedOrders": 456
-    },
     "tags": ["stories", "posts", "pack", "digital"],
     "dimensions": "Multiple formats",
-    "format": ["PNG", "MP4", "GIF"],
-    "deliveryTime": "3 heures",
-    "maxRetouches": 10,
+    "deliveryTime": "1 heure",
+    "maxRetouches": 7,
     "rating": 4.9,
     "reviewCount": 156,
     "featured": true,
+    "isExclusive": false,
     "createdAt": "2024-02-14"
   },
   {
@@ -150,106 +110,74 @@
     "previewImages": [
       "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&h=600&fit=crop&auto=format"
     ],
-    "designer": {
-      "id": "des-002",
-      "name": "Kofi Mensah",
-      "avatar": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop&auto=format",
-      "specialty": "Motion Design & Affiches",
-      "rating": 4.8,
-      "completedOrders": 218
-    },
-    "tags": ["graduation", "diplôme", "cérémonie", "fête"],
+    "tags": ["graduation", "diplôme", "cérémonie"],
     "dimensions": "A3 (29.7 x 42 cm)",
-    "format": ["PNG", "PDF"],
-    "deliveryTime": "1 heure",
+    "deliveryTime": "3 heures",
     "maxRetouches": 2,
     "rating": 4.8,
     "reviewCount": 112,
     "featured": true,
+    "isExclusive": false,
     "createdAt": "2024-03-15"
   },
   {
     "id": "d-007",
     "title": "Faire-part Mariage Romantique",
     "categorySlug": "mariage",
-    "tier": "intermediate",
+    "tier": "standard",
     "price": 3000,
     "imageUrl": "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600&h=400&fit=crop&auto=format",
     "previewImages": [
       "https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&h=600&fit=crop&auto=format"
     ],
-    "designer": {
-      "id": "des-005",
-      "name": "Mariama Bah",
-      "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&auto=format",
-      "specialty": "Mode & Luxe",
-      "rating": 5.0,
-      "completedOrders": 127
-    },
-    "tags": ["mariage", "faire-part", "romantique", "invitation"],
+    "tags": ["mariage", "faire-part", "romantique"],
     "dimensions": "A5 (14.8 x 21 cm)",
-    "format": ["PNG", "PDF"],
     "deliveryTime": "2 heures",
     "maxRetouches": 4,
     "rating": 5.0,
     "reviewCount": 89,
     "featured": true,
+    "isExclusive": false,
     "createdAt": "2024-01-25"
   },
   {
     "id": "d-008",
-    "title": "Pack Mariage Complet Premium",
+    "title": "Affiche Mariage Exclusive",
     "categorySlug": "mariage",
-    "tier": "premium",
-    "price": 5000,
+    "tier": "exclusive",
+    "price": 10000,
     "imageUrl": "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=600&h=400&fit=crop&auto=format",
     "previewImages": [
       "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=800&h=600&fit=crop&auto=format"
     ],
-    "designer": {
-      "id": "des-005",
-      "name": "Mariama Bah",
-      "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&auto=format",
-      "specialty": "Mode & Luxe",
-      "rating": 5.0,
-      "completedOrders": 127
-    },
-    "tags": ["mariage", "pack", "complet", "luxe"],
-    "dimensions": "Multiples formats",
-    "format": ["PNG", "PDF", "PSD"],
-    "deliveryTime": "3 heures",
-    "maxRetouches": 10,
+    "tags": ["mariage", "exclusif", "unique"],
+    "dimensions": "A2 (42 x 59.4 cm)",
+    "deliveryTime": "1 heure",
+    "maxRetouches": 5,
     "rating": 5.0,
-    "reviewCount": 54,
+    "reviewCount": 8,
     "featured": true,
+    "isExclusive": true,
     "createdAt": "2024-02-08"
   },
   {
     "id": "d-009",
     "title": "Affiche Concert Dynamique",
     "categorySlug": "concert-musique",
-    "tier": "intermediate",
+    "tier": "standard",
     "price": 3000,
     "imageUrl": "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=600&h=400&fit=crop&auto=format",
     "previewImages": [
       "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=800&h=600&fit=crop&auto=format"
     ],
-    "designer": {
-      "id": "des-002",
-      "name": "Kofi Mensah",
-      "avatar": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop&auto=format",
-      "specialty": "Motion Design & Affiches",
-      "rating": 4.8,
-      "completedOrders": 218
-    },
-    "tags": ["concert", "musique", "affiche", "événement"],
+    "tags": ["concert", "musique", "affiche"],
     "dimensions": "A2 (42 x 59.4 cm)",
-    "format": ["PNG", "PDF"],
     "deliveryTime": "2 heures",
     "maxRetouches": 4,
     "rating": 4.9,
     "reviewCount": 178,
     "featured": true,
+    "isExclusive": false,
     "createdAt": "2024-03-05"
   },
   {
@@ -262,22 +190,14 @@
     "previewImages": [
       "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800&h=600&fit=crop&auto=format"
     ],
-    "designer": {
-      "id": "des-004",
-      "name": "Ibrahim Coulibaly",
-      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&auto=format",
-      "specialty": "Événementiel & Fête",
-      "rating": 4.7,
-      "completedOrders": 189
-    },
-    "tags": ["festival", "couleurs", "fête", "culturel"],
+    "tags": ["festival", "couleurs", "culturel"],
     "dimensions": "A2 (42 x 59.4 cm)",
-    "format": ["PNG", "PDF", "AI"],
-    "deliveryTime": "3 heures",
-    "maxRetouches": 10,
+    "deliveryTime": "1 heure",
+    "maxRetouches": 7,
     "rating": 4.8,
     "reviewCount": 93,
     "featured": true,
+    "isExclusive": false,
     "createdAt": "2024-02-28"
   },
   {
@@ -290,50 +210,34 @@
     "previewImages": [
       "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop&auto=format"
     ],
-    "designer": {
-      "id": "des-004",
-      "name": "Ibrahim Coulibaly",
-      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&auto=format",
-      "specialty": "Événementiel & Fête",
-      "rating": 4.7,
-      "completedOrders": 189
-    },
-    "tags": ["anniversaire", "invitation", "fête", "fun"],
+    "tags": ["anniversaire", "invitation", "fête"],
     "dimensions": "A5 (14.8 x 21 cm)",
-    "format": ["PNG", "PDF"],
-    "deliveryTime": "1 heure",
+    "deliveryTime": "3 heures",
     "maxRetouches": 2,
     "rating": 4.7,
     "reviewCount": 245,
     "featured": false,
+    "isExclusive": false,
     "createdAt": "2024-01-18"
   },
   {
     "id": "d-012",
     "title": "Visuel Banque Professionnel",
     "categorySlug": "banque-finance",
-    "tier": "intermediate",
+    "tier": "standard",
     "price": 3000,
     "imageUrl": "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=600&h=400&fit=crop&auto=format",
     "previewImages": [
       "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&h=600&fit=crop&auto=format"
     ],
-    "designer": {
-      "id": "des-001",
-      "name": "Aminata Diallo",
-      "avatar": "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=100&h=100&fit=crop&auto=format",
-      "specialty": "Branding & Identité visuelle",
-      "rating": 4.9,
-      "completedOrders": 342
-    },
-    "tags": ["banque", "finance", "professionnel", "corporate"],
+    "tags": ["banque", "finance", "professionnel"],
     "dimensions": "A4 (21 x 29.7 cm)",
-    "format": ["PNG", "PDF", "PSD"],
     "deliveryTime": "2 heures",
     "maxRetouches": 4,
     "rating": 4.8,
     "reviewCount": 76,
     "featured": false,
+    "isExclusive": false,
     "createdAt": "2024-03-10"
   }
 ]

@@ -1,4 +1,4 @@
-export type PricingTier = 'basic' | 'intermediate' | 'premium'
+export type PricingTier = 'basic' | 'standard' | 'premium' | 'exclusive'
 
 export interface Category {
   id: string
@@ -19,48 +19,56 @@ export interface Design {
   price: number
   imageUrl: string
   previewImages: string[]
-  designer: Designer
   tags: string[]
   dimensions: string
-  format: string[]
   deliveryTime: string
   maxRetouches: number
   rating: number
   reviewCount: number
   featured: boolean
+  isExclusive: boolean
   createdAt: string
 }
 
-export interface Designer {
-  id: string
-  name: string
-  avatar: string
-  specialty: string
-  rating: number
-  completedOrders: number
-}
-
 export interface OrderCustomization {
+  // Identité
+  mainName?: string        // Nom principal (marque, événement, personne)
+  secondaryName?: string   // Nom secondaire (sous-titre, partenaire)
+  tagline?: string         // Slogan / tagline
+  // Textes
+  mainText?: string        // Texte principal / accroche
+  secondaryText?: string   // Texte secondaire / description
+  priceDisplay?: string    // Prix à afficher sur le design
+  // Contact
+  phoneNumber?: string
+  email?: string
+  address?: string         // Adresse / quartier
+  city?: string
+  // Événement
+  eventDate?: string
+  eventStartTime?: string  // Heure de début
+  eventEndTime?: string    // Heure de fin
+  eventVenue?: string      // Lieu / salle
+  // Médias
   photo?: File | null
   photoPreview?: string
-  logo?: File | null
-  logoPreview?: string
-  customText?: string
-  phoneNumber?: string
+  // Style
+  designLanguage?: string  // Langue du design
+  colorPreference?: string // Couleur(s) choisie(s)
+  ambiance?: string        // Moderne, Traditionnel, Luxe, Festif, Sobre
+  // Réseaux sociaux
   socialLinks?: SocialLinks
-  amount?: string
-  eventDate?: string
-  eventLocation?: string
-  additionalNotes?: string
-  colorPreference?: string
+  // Note libre
+  designerNote?: string    // Instructions libres au designer
 }
 
 export interface SocialLinks {
-  facebook?: string
   instagram?: string
-  twitter?: string
+  facebook?: string
   tiktok?: string
   whatsapp?: string
+  youtube?: string
+  twitter?: string
   website?: string
 }
 
@@ -111,30 +119,40 @@ export const PRICING_TIERS = {
     label: 'Basique',
     price: 1000,
     maxRetouches: 2,
-    deliveryTime: '1 heure',
-    color: 'from-blue-500 to-cyan-500',
-    bgColor: 'bg-blue-500/10',
-    borderColor: 'border-blue-500/30',
-    textColor: 'text-blue-400',
+    deliveryTime: '3 heures',
+    format: 'JPG',
+    description: 'Idéal pour un besoin simple et rapide',
+    isExclusive: false,
   },
-  intermediate: {
-    label: 'Intermédiaire',
+  standard: {
+    label: 'Standard',
     price: 3000,
     maxRetouches: 4,
     deliveryTime: '2 heures',
-    color: 'from-primary-500 to-purple-600',
-    bgColor: 'bg-primary-500/10',
-    borderColor: 'border-primary-500/30',
-    textColor: 'text-primary-400',
+    format: 'JPG',
+    description: 'Le meilleur rapport qualité-prix',
+    isExclusive: false,
   },
   premium: {
     label: 'Premium',
     price: 5000,
-    maxRetouches: 10,
-    deliveryTime: '3 heures',
-    color: 'from-accent-400 to-orange-500',
-    bgColor: 'bg-accent-500/10',
-    borderColor: 'border-accent-500/30',
-    textColor: 'text-accent-400',
+    maxRetouches: 7,
+    deliveryTime: '1 heure',
+    format: 'JPG',
+    description: 'Livraison prioritaire et plus de retouches',
+    isExclusive: false,
+  },
+  exclusive: {
+    label: 'Exclusif',
+    price: 10000,
+    maxRetouches: 5,
+    deliveryTime: '1 heure',
+    format: 'JPG',
+    description: 'Ce design vous appartient — retiré après votre commande',
+    isExclusive: true,
   },
 } as const
+
+export function formatPrice(amount: number): string {
+  return amount.toLocaleString('fr-FR') + ' FCFA'
+}

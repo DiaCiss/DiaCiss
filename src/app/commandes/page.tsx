@@ -220,8 +220,8 @@ export default function CommandesPage() {
                     </div>
                     <div className="font-black text-sand-900 mt-1 line-clamp-1">{order.design.title}</div>
                     <div className="text-xs text-sand-400">
-                      Designer :{' '}
-                      <span className="font-semibold text-primary-500">{order.design.designer.name}</span>
+                      Tier :{' '}
+                      <span className="font-semibold text-primary-500 capitalize">{order.design.tier}</span>
                     </div>
                     <div className="font-bold text-sand-900 mt-1">
                       {formatPrice(order.price)}

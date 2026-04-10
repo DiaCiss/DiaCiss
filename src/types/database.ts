@@ -34,22 +34,13 @@ export type Database = {
           id: string
           design_id: string
           client_id: string
-          designer_id: string
           status: 'pending' | 'in_progress' | 'delivered' | 'paid' | 'completed' | 'revision_requested'
-          tier: 'basic' | 'intermediate' | 'premium'
+          tier: 'basic' | 'standard' | 'premium' | 'exclusive'
           price: number
           retouches_used: number
           max_retouches: number
-          custom_text: string | null
-          phone_number: string | null
-          event_date: string | null
-          event_location: string | null
-          additional_notes: string | null
-          color_preference: string | null
-          amount: string | null
-          social_links: Json | null
+          customization: Json | null
           photo_url: string | null
-          logo_url: string | null
           delivery_deadline: string | null
           paid_at: string | null
           delivered_at: string | null
@@ -59,22 +50,13 @@ export type Database = {
           id?: string
           design_id: string
           client_id: string
-          designer_id: string
           status?: 'pending' | 'in_progress' | 'delivered' | 'paid' | 'completed' | 'revision_requested'
-          tier: 'basic' | 'intermediate' | 'premium'
+          tier: 'basic' | 'standard' | 'premium' | 'exclusive'
           price: number
           retouches_used?: number
           max_retouches: number
-          custom_text?: string | null
-          phone_number?: string | null
-          event_date?: string | null
-          event_location?: string | null
-          additional_notes?: string | null
-          color_preference?: string | null
-          amount?: string | null
-          social_links?: Json | null
+          customization?: Json | null
           photo_url?: string | null
-          logo_url?: string | null
           delivery_deadline?: string | null
           paid_at?: string | null
           delivered_at?: string | null
@@ -84,7 +66,6 @@ export type Database = {
           status?: 'pending' | 'in_progress' | 'delivered' | 'paid' | 'completed' | 'revision_requested'
           retouches_used?: number
           photo_url?: string | null
-          logo_url?: string | null
           paid_at?: string | null
           delivered_at?: string | null
         }

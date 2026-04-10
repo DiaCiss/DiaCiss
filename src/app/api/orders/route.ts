@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { getDesignById } from '@/lib/data'
+import { PRICING_TIERS } from '@/types'
+import type { TablesInsert } from '@/types/database'
 
 // GET /api/orders — liste des commandes de l'utilisateur connecté
 export async function GET() {
@@ -36,29 +38,28 @@ export async function POST(request: NextRequest) {
   const design = getDesignById(designId)
   if (!design) return NextResponse.json({ error: 'Design introuvable' }, { status: 404 })
 
-  const deliveryHours = { basic: 1, intermediate: 2, premium: 3 }[tier as string] ?? 1
+  const tierKey = tier as keyof typeof PRICING_TIERS
+  const tierConfig = PRICING_TIERS[tierKey] ?? PRICING_TIERS.basic
+  const deliveryHours = tierConfig.deliveryTime.startsWith('1 ') ? 1
+    : parseInt(tierConfig.deliveryTime) || 2
   const deliveryDeadline = new Date(Date.now() + deliveryHours * 3600 * 1000).toISOString()
 
-  const { data: order, error } = await supabase.from('orders').insert({
+  const insertData: TablesInsert<'orders'> = {
     design_id: designId,
     client_id: user.id,
-    designer_id: design.designer.id,
-    tier,
+    tier: tierKey,
     price: design.price,
     max_retouches: design.maxRetouches,
-    custom_text: customization.customText || null,
-    phone_number: customization.phoneNumber || null,
-    event_date: customization.eventDate || null,
-    event_location: customization.eventLocation || null,
-    additional_notes: customization.additionalNotes || null,
-    color_preference: customization.colorPreference || null,
-    amount: customization.amount || null,
-    social_links: customization.socialLinks || null,
-    photo_url: customization.photoUrl || null,
-    logo_url: customization.logoUrl || null,
+    customization: customization ?? null,
     delivery_deadline: deliveryDeadline,
     status: 'in_progress',
-  }).select().single()
+  }
+
+  const { data: order, error } = await supabase
+    .from('orders')
+    .insert(insertData)
+    .select()
+    .single()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
@@ -66,7 +67,7 @@ export async function POST(request: NextRequest) {
   await supabase.from('messages').insert({
     order_id: order.id,
     sender_type: 'system',
-    content: `Commande #${order.id} reçue ! Votre designer ${design.designer.name} commence maintenant. Livraison prévue dans ~${deliveryHours} heure${deliveryHours > 1 ? 's' : ''}.`,
+    content: `Commande #${order.id} reçue ! Notre équipe commence maintenant. Livraison prévue dans ~${deliveryHours} heure${deliveryHours > 1 ? 's' : ''}.`,
     read: false,
   })
 

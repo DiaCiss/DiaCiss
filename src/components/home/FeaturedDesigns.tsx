@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, Heart } from 'lucide-react'
+import { ArrowRight, Star } from 'lucide-react'
 import type { Design } from '@/types'
 import { formatPrice } from '@/lib/utils'
 
@@ -13,8 +13,9 @@ interface FeaturedDesignsProps {
 
 const tierLabel: Record<string, string> = {
   basic: 'BASIQUE',
-  intermediate: 'INTERMÉDIAIRE',
+  standard: 'STANDARD',
   premium: 'PREMIUM',
+  exclusive: 'EXCLUSIF',
 }
 
 export default function FeaturedDesigns({ designs }: FeaturedDesignsProps) {
@@ -70,20 +71,22 @@ export default function FeaturedDesigns({ designs }: FeaturedDesignsProps) {
                     />
                     <div className="absolute top-3 left-3">
                       <span className={`badge ${
-                        design.tier === 'premium' ? 'badge-premium' :
-                        design.tier === 'intermediate' ? 'badge-inter' : 'badge-basic'
+                        design.tier === 'exclusive' || design.tier === 'premium' ? 'badge-premium' :
+                        design.tier === 'standard' ? 'badge-inter' : 'badge-basic'
                       }`}>
                         {tierLabel[design.tier]}
                       </span>
                     </div>
-                    <button className="absolute top-3 right-3 w-8 h-8 bg-white rounded-full shadow flex items-center justify-center text-sand-400 hover:text-primary-500 transition-colors">
-                      <Heart className="w-4 h-4" />
-                    </button>
+                    {design.isExclusive && (
+                      <div className="absolute bottom-0 inset-x-0 bg-amber-500/90 text-white text-[10px] font-bold text-center py-1">
+                        EXCLUSIF — 1 seul acheteur
+                      </div>
+                    )}
                   </div>
 
                   {/* Info */}
                   <div className="p-4">
-                    <div className="flex items-start justify-between gap-2 mb-1">
+                    <div className="flex items-start justify-between gap-2 mb-2">
                       <h3 className="font-bold text-sand-900 text-sm leading-tight line-clamp-2 group-hover:text-primary-500 transition-colors">
                         {design.title}
                       </h3>
@@ -92,14 +95,10 @@ export default function FeaturedDesigns({ designs }: FeaturedDesignsProps) {
                       </span>
                     </div>
 
-                    <p className="text-xs text-sand-400 mb-3 flex items-center gap-1">
-                      <span className="w-4 h-4 bg-sand-200 rounded-full inline-flex items-center justify-center text-[10px]">D</span>
-                      Designer : {design.designer.name}
-                    </p>
-
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-sand-400">
-                        ★ {design.rating} · {design.reviewCount} avis
+                      <span className="flex items-center gap-1 text-xs text-sand-400">
+                        <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                        {design.rating} · {design.reviewCount} avis
                       </span>
                       <span className="text-xs font-semibold text-sand-600 hover:text-primary-500 flex items-center gap-0.5 group-hover:text-primary-500 transition-colors">
                         Voir le détail <ArrowRight className="w-3 h-3" />

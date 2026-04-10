@@ -41,15 +41,15 @@ export function TierCard({ tier, selected, onClick, highlight }: TierCardProps) 
       <div className={`space-y-1.5 text-sm ${highlight ? 'text-orange-100' : 'text-sand-500'}`}>
         <div className="flex items-center gap-2">
           <Clock className="w-3.5 h-3.5 flex-shrink-0" />
-          {config.deliveryTime} delivery
+          {config.deliveryTime}
         </div>
         <div className="flex items-center gap-2">
           <RefreshCw className="w-3.5 h-3.5 flex-shrink-0" />
-          {config.maxRetouches} révisions
+          {config.maxRetouches} révision{config.maxRetouches > 1 ? 's' : ''}
         </div>
         <div className="flex items-center gap-2">
           <FileText className="w-3.5 h-3.5 flex-shrink-0" />
-          {tier === 'basic' ? 'PNG/PDF' : tier === 'intermediate' ? 'PNG/PDF/PSD' : 'PNG/PDF/PSD/AI'}
+          JPG
         </div>
       </div>
     </div>
@@ -59,8 +59,8 @@ export function TierCard({ tier, selected, onClick, highlight }: TierCardProps) 
 export default function PricingBadge({ tier }: { tier: PricingTier }) {
   const config = PRICING_TIERS[tier]
   const cls =
-    tier === 'premium' ? 'badge-premium' :
-    tier === 'intermediate' ? 'badge-inter' : 'badge-basic'
+    tier === 'exclusive' || tier === 'premium' ? 'badge-premium' :
+    tier === 'standard' ? 'badge-inter' : 'badge-basic'
 
   return (
     <span className={`badge ${cls}`}>

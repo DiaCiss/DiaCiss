@@ -24,8 +24,9 @@ export default function CategoryPageClient({ category, designs }: Props) {
   const filters: { key: Filter; label: string }[] = [
     { key: 'all', label: 'ALL DESIGNS' },
     { key: 'basic', label: `BASIQUE (${formatPrice(PRICING_TIERS.basic.price)})` },
-    { key: 'intermediate', label: `INTERMÉDIAIRE (${formatPrice(PRICING_TIERS.intermediate.price)})` },
+    { key: 'standard', label: `STANDARD (${formatPrice(PRICING_TIERS.standard.price)})` },
     { key: 'premium', label: `PREMIUM (${formatPrice(PRICING_TIERS.premium.price)})` },
+    { key: 'exclusive', label: `EXCLUSIF (${formatPrice(PRICING_TIERS.exclusive.price)})` },
   ]
 
   return (

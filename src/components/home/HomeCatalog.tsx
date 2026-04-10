@@ -173,7 +173,7 @@ function DesignCard({ design, index }: { design: Design; index: number }) {
                 {design.rating}
               </span>
             </div>
-            <p className="text-[10px] text-sand-400 mt-1 truncate">par {design.designer.name}</p>
+            <p className="text-[10px] text-sand-400 mt-1 truncate">{design.tier.charAt(0).toUpperCase() + design.tier.slice(1)} · {design.deliveryTime}</p>
           </div>
         </div>
       </Link>

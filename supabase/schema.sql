@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════
--- EASILYDESIGN — Schéma complet Supabase
+-- ISALIDESIGN — Schéma complet Supabase (v2)
 -- À exécuter dans : Supabase Dashboard → SQL Editor → New Query
 -- ═══════════════════════════════════════════════════════════
 
@@ -38,24 +38,15 @@ CREATE TABLE IF NOT EXISTS public.orders (
   id                  TEXT PRIMARY KEY DEFAULT 'ORD-' || upper(substring(gen_random_uuid()::text, 1, 8)),
   design_id           TEXT NOT NULL,
   client_id           UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
-  designer_id         TEXT NOT NULL,
-  status              TEXT NOT NULL DEFAULT 'pending'
+  status              TEXT NOT NULL DEFAULT 'in_progress'
                       CHECK (status IN ('pending','in_progress','delivered','paid','completed','revision_requested')),
-  tier                TEXT NOT NULL CHECK (tier IN ('basic','intermediate','premium')),
+  tier                TEXT NOT NULL CHECK (tier IN ('basic','standard','premium','exclusive')),
   price               INTEGER NOT NULL,
   retouches_used      INTEGER NOT NULL DEFAULT 0,
   max_retouches       INTEGER NOT NULL,
-  -- Champs de personnalisation
-  custom_text         TEXT,
-  phone_number        TEXT,
-  event_date          TEXT,
-  event_location      TEXT,
-  additional_notes    TEXT,
-  color_preference    TEXT,
-  amount              TEXT,
-  social_links        JSONB,
+  -- Toute la personnalisation dans un seul champ JSON
+  customization       JSONB,
   photo_url           TEXT,
-  logo_url            TEXT,
   -- Timestamps
   delivery_deadline   TIMESTAMPTZ,
   paid_at             TIMESTAMPTZ,
