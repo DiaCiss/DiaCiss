@@ -8,14 +8,13 @@ import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 import {
   ChevronRight, Star, MessageSquare, CheckCircle,
-  Clock, RefreshCw, FileText, Image as ImageIcon,
-  Type, Phone, Globe, DollarSign, Calendar, MapPin,
+  FileText, Image as ImageIcon,
+  Type, Phone, Globe, Calendar,
   Instagram, Facebook, Twitter, Palette, ArrowLeft
 } from 'lucide-react'
 import type { Design, OrderCustomization } from '@/types'
 import { PRICING_TIERS, type PricingTier } from '@/types'
-import { formatPrice, generateOrderId, getDeliveryDeadline } from '@/lib/utils'
-import { useAppStore } from '@/lib/store'
+import { formatPrice } from '@/lib/utils'
 import { TierCard } from '@/components/ui/PricingBadge'
 import { getAllDesigns } from '@/lib/data'
 
@@ -25,11 +24,12 @@ const STEPS = ['Détails', 'Médias', 'Révision']
 
 export default function DesignDetailClient({ design }: Props) {
   const router = useRouter()
-  const { addOrder, addMessage } = useAppStore()
   const [activeImage, setActiveImage] = useState(0)
   const [showForm, setShowForm] = useState(false)
   const [step, setStep] = useState(0)
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [selectedTier, setSelectedTier] = useState<PricingTier>(design.tier)
   const [customization, setCustomization] = useState<OrderCustomization>({
     customText: '',
     phoneNumber: '',
@@ -46,7 +46,8 @@ export default function DesignDetailClient({ design }: Props) {
   ).slice(0, 3)
 
   const allImages = [design.imageUrl, ...design.previewImages].filter(Boolean)
-  const tier = PRICING_TIERS[design.tier]
+  const tierData = PRICING_TIERS[selectedTier]
+  const tierPrice = tierData.price
 
   const COLORS = ['#E8501E', '#1A1A1A', '#3B5BDB', '#2E7D32', '#F59E0B']
   const [selectedColor, setSelectedColor] = useState('')
@@ -62,33 +63,74 @@ export default function DesignDetailClient({ design }: Props) {
     reader.readAsDataURL(file)
   }
 
-  const handleSubmit = () => {
-    const orderId = generateOrderId()
-    addOrder({
-      id: orderId,
-      designId: design.id,
-      design,
-      customization: { ...customization, colorPreference: selectedColor || customization.colorPreference },
-      status: 'in_progress',
-      tier: design.tier,
-      price: design.price,
-      retouchesUsed: 0,
-      maxRetouches: design.maxRetouches,
-      createdAt: new Date().toISOString(),
-      deliveryDeadline: getDeliveryDeadline(1),
-    })
-    addMessage({
-      id: 'msg-' + Date.now(),
-      orderId,
-      senderId: 'system',
-      senderType: 'system',
-      content: `Commande #${orderId} reçue ! Votre designer commence maintenant. Livraison prévue dans ~1 heure.`,
-      createdAt: new Date().toISOString(),
-      read: false,
-    })
-    setSubmitted(true)
-    toast.success('Commande envoyée !')
-    setTimeout(() => router.push('/commandes'), 2000)
+  const uploadFile = async (file: File, type: 'photo' | 'logo'): Promise<string | null> => {
+    const fd = new FormData()
+    fd.append('file', file)
+    fd.append('type', type)
+    try {
+      const res = await fetch('/api/upload', { method: 'POST', body: fd })
+      if (!res.ok) return null
+      const data = await res.json()
+      return data.url as string
+    } catch {
+      return null
+    }
+  }
+
+  const handleSubmit = async () => {
+    setSubmitting(true)
+    try {
+      // Upload files if selected
+      let photoUrl: string | null = null
+      let logoUrl: string | null = null
+
+      if (customization.photo) {
+        photoUrl = await uploadFile(customization.photo, 'photo')
+      }
+      if (customization.logo) {
+        logoUrl = await uploadFile(customization.logo, 'logo')
+      }
+
+      const res = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          designId: design.id,
+          tier: selectedTier,
+          customization: {
+            customText: customization.customText,
+            phoneNumber: customization.phoneNumber,
+            eventDate: customization.eventDate,
+            eventLocation: customization.eventLocation,
+            additionalNotes: customization.additionalNotes,
+            colorPreference: selectedColor || customization.colorPreference,
+            amount: customization.amount,
+            socialLinks: customization.socialLinks,
+            photoUrl,
+            logoUrl,
+          },
+        }),
+      })
+
+      if (!res.ok) {
+        const err = await res.json()
+        if (res.status === 401) {
+          toast.error('Connectez-vous pour passer une commande')
+          router.push('/auth/login?redirectTo=/design/' + design.id)
+          return
+        }
+        toast.error(err.error || 'Erreur lors de la commande')
+        return
+      }
+
+      setSubmitted(true)
+      toast.success('Commande envoyée !')
+      setTimeout(() => router.push('/commandes'), 2000)
+    } catch {
+      toast.error('Erreur réseau, veuillez réessayer')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   if (submitted) {
@@ -187,11 +229,11 @@ export default function DesignDetailClient({ design }: Props) {
                 </button>
               </div>
 
-              {/* 3 Tier cards */}
+              {/* 3 Tier cards — clickable to select tier */}
               <div className="space-y-3 pt-2">
-                <TierCard tier="basic" />
-                <TierCard tier="intermediate" />
-                <TierCard tier="premium" highlight />
+                <TierCard tier="basic" selected={selectedTier === 'basic'} onClick={() => setSelectedTier('basic')} />
+                <TierCard tier="intermediate" selected={selectedTier === 'intermediate'} onClick={() => setSelectedTier('intermediate')} />
+                <TierCard tier="premium" highlight selected={selectedTier === 'premium'} onClick={() => setSelectedTier('premium')} />
               </div>
 
               {/* Reserve button */}
@@ -247,6 +289,7 @@ export default function DesignDetailClient({ design }: Props) {
                 </div>
                 <div className="px-3 pb-3">
                   <div className="text-xs font-bold text-sand-900">{design.categorySlug.replace(/-/g, ' ')}</div>
+                  <div className="text-xs text-sand-400 mt-1 capitalize">{selectedTier} · {formatPrice(tierPrice)}</div>
                 </div>
               </div>
 
@@ -282,8 +325,16 @@ export default function DesignDetailClient({ design }: Props) {
                         <input className="input" placeholder="ex: Le Petit Bistro" value={customization.customText || ''} onChange={(e) => setCustomization((p) => ({ ...p, customText: e.target.value }))} />
                       </div>
                       <div>
+                        <label className="block text-xs font-semibold text-sand-500 uppercase tracking-wide mb-1.5">Numéro de téléphone</label>
+                        <input className="input" placeholder="ex: +225 07 00 00 00 00" value={customization.phoneNumber || ''} onChange={(e) => setCustomization((p) => ({ ...p, phoneNumber: e.target.value }))} />
+                      </div>
+                      <div>
                         <label className="block text-xs font-semibold text-sand-500 uppercase tracking-wide mb-1.5">Prix à afficher</label>
                         <input className="input" placeholder="ex: À partir de 3 000 FCFA" value={customization.amount || ''} onChange={(e) => setCustomization((p) => ({ ...p, amount: e.target.value }))} />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-sand-500 uppercase tracking-wide mb-1.5">Localisation</label>
+                        <input className="input" placeholder="ex: Rue des Jardins, Abidjan" value={customization.eventLocation || ''} onChange={(e) => setCustomization((p) => ({ ...p, eventLocation: e.target.value }))} />
                       </div>
                       <div className="sm:col-span-2">
                         <label className="block text-xs font-semibold text-sand-500 uppercase tracking-wide mb-1.5">Slogan / Texte principal</label>
@@ -299,19 +350,13 @@ export default function DesignDetailClient({ design }: Props) {
                         <Calendar className="w-4 h-4 text-blue-500" />
                       </div>
                       <div>
-                        <div className="font-bold text-sand-900">Date &amp; Lieu</div>
-                        <div className="text-xs text-sand-400">Quand et où se déroule l&apos;événement</div>
+                        <div className="font-bold text-sand-900">Date de l&apos;événement</div>
+                        <div className="text-xs text-sand-400">Quand se déroule l&apos;événement</div>
                       </div>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-xs font-semibold text-sand-500 uppercase tracking-wide mb-1.5">Date de l&apos;événement</label>
-                        <input type="date" className="input" value={customization.eventDate || ''} onChange={(e) => setCustomization((p) => ({ ...p, eventDate: e.target.value }))} />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-sand-500 uppercase tracking-wide mb-1.5">Localisation</label>
-                        <input className="input" placeholder="ex: Rue des Jardins, Abidjan" value={customization.eventLocation || ''} onChange={(e) => setCustomization((p) => ({ ...p, eventLocation: e.target.value }))} />
-                      </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-sand-500 uppercase tracking-wide mb-1.5">Date</label>
+                      <input type="date" className="input" value={customization.eventDate || ''} onChange={(e) => setCustomization((p) => ({ ...p, eventDate: e.target.value }))} />
                     </div>
                   </div>
                 </motion.div>
@@ -420,12 +465,14 @@ export default function DesignDetailClient({ design }: Props) {
                         {COLORS.map((c) => (
                           <button
                             key={c}
+                            type="button"
                             onClick={() => setSelectedColor(c)}
                             style={{ background: c }}
                             className={`w-8 h-8 rounded-full border-2 transition-all ${selectedColor === c ? 'border-sand-900 scale-110' : 'border-white shadow'}`}
                           />
                         ))}
                         <button
+                          type="button"
                           onClick={() => setSelectedColor('')}
                           className="w-8 h-8 rounded-full border-2 border-dashed border-sand-300 flex items-center justify-center text-sand-400 hover:border-primary-400 transition-colors text-lg"
                         >
@@ -450,6 +497,7 @@ export default function DesignDetailClient({ design }: Props) {
               {/* Navigation buttons */}
               <div className="flex items-center justify-between pt-2">
                 <button
+                  type="button"
                   onClick={() => step === 0 ? setShowForm(false) : setStep(step - 1)}
                   className="flex items-center gap-1.5 px-5 py-2.5 btn-ghost rounded-xl text-sm"
                 >
@@ -460,20 +508,26 @@ export default function DesignDetailClient({ design }: Props) {
                 <div className="flex items-center gap-4">
                   <div>
                     <div className="text-xs text-sand-400 text-right">Total à payer</div>
-                    <div className="text-xl font-black text-primary-500">{formatPrice(design.price)}</div>
+                    <div className="text-xl font-black text-primary-500">{formatPrice(tierPrice)}</div>
                   </div>
                   {step < STEPS.length - 1 ? (
-                    <button onClick={() => setStep(step + 1)} className="px-6 py-3 btn-primary rounded-xl text-sm flex items-center gap-2">
+                    <button type="button" onClick={() => setStep(step + 1)} className="px-6 py-3 btn-primary rounded-xl text-sm flex items-center gap-2">
                       Suivant <ChevronRight className="w-4 h-4" />
                     </button>
                   ) : (
                     <motion.button
+                      type="button"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={handleSubmit}
-                      className="px-6 py-3 btn-primary rounded-xl text-sm flex items-center gap-2"
+                      disabled={submitting}
+                      className="px-6 py-3 btn-primary rounded-xl text-sm flex items-center gap-2 disabled:opacity-60"
                     >
-                      Confirmer la commande <ChevronRight className="w-4 h-4" />
+                      {submitting ? (
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      ) : (
+                        <>Confirmer la commande <ChevronRight className="w-4 h-4" /></>
+                      )}
                     </motion.button>
                   )}
                 </div>

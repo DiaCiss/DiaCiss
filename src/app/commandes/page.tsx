@@ -1,24 +1,29 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Search, Plus, MessageSquare, Eye, Download, RefreshCw, CreditCard } from 'lucide-react'
-import { useAppStore } from '@/lib/store'
-import { PRICING_TIERS } from '@/types'
 import { formatPrice } from '@/lib/utils'
 import AppSidebar from '@/components/layout/AppSidebar'
+import { getDesignById } from '@/lib/data'
+import type { Design } from '@/types'
+import type { Database } from '@/types/database'
+import toast from 'react-hot-toast'
+import { createClient } from '@/lib/supabase/client'
 
+type OrderRow = Database['public']['Tables']['orders']['Row']
+type EnrichedOrder = OrderRow & { design: Design }
 type Tab = 'all' | 'active' | 'done'
 
 const statusConfig: Record<string, { label: string; color: string; bg: string }> = {
-  pending:            { label: 'En attente',        color: 'text-yellow-700', bg: 'bg-yellow-100' },
-  in_progress:        { label: 'En cours de design', color: 'text-blue-700',   bg: 'bg-blue-100'   },
-  delivered:          { label: 'Prêt pour révision', color: 'text-purple-700', bg: 'bg-purple-100' },
-  paid:               { label: 'Payé',               color: 'text-green-700',  bg: 'bg-green-100'  },
-  completed:          { label: 'Livré',              color: 'text-sand-700',   bg: 'bg-sand-100'   },
-  revision_requested: { label: 'Révision demandée',  color: 'text-orange-700', bg: 'bg-orange-100' },
+  pending:            { label: 'En attente',         color: 'text-yellow-700', bg: 'bg-yellow-100' },
+  in_progress:        { label: 'En cours de design',  color: 'text-blue-700',   bg: 'bg-blue-100'   },
+  delivered:          { label: 'Prêt pour révision',  color: 'text-purple-700', bg: 'bg-purple-100' },
+  paid:               { label: 'Payé',                color: 'text-green-700',  bg: 'bg-green-100'  },
+  completed:          { label: 'Livré',               color: 'text-sand-700',   bg: 'bg-sand-100'   },
+  revision_requested: { label: 'Révision demandée',   color: 'text-orange-700', bg: 'bg-orange-100' },
 }
 
 const PROGRESS_STEPS = ['Commandé', 'En Design', 'Révision', 'Livré']
@@ -31,19 +36,105 @@ function progressIndex(status: string) {
   return map[status] ?? 0
 }
 
+function enrichOrder(row: OrderRow): EnrichedOrder | null {
+  const design = getDesignById(row.design_id)
+  return design ? { ...row, design } : null
+}
+
 export default function CommandesPage() {
-  const { orders, updateOrderStatus } = useAppStore()
+  const [orders, setOrders] = useState<EnrichedOrder[]>([])
+  const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState<Tab>('all')
   const [search, setSearch] = useState('')
 
+  const fetchOrders = useCallback(async () => {
+    try {
+      const res = await fetch('/api/orders')
+      if (!res.ok) return
+      const { orders: rows } = await res.json() as { orders: OrderRow[] }
+      const enriched = rows.map(enrichOrder).filter(Boolean) as EnrichedOrder[]
+      setOrders(enriched)
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchOrders()
+
+    // Subscribe to real-time order updates
+    const supabase = createClient()
+    const channel = supabase
+      .channel('commandes-realtime')
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'orders' },
+        (payload) => {
+          const updated = enrichOrder(payload.new as OrderRow)
+          if (updated) {
+            setOrders((prev) =>
+              prev.map((o) => o.id === updated.id ? updated : o)
+            )
+          }
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'orders' },
+        (payload) => {
+          const inserted = enrichOrder(payload.new as OrderRow)
+          if (inserted) {
+            setOrders((prev) => [inserted, ...prev])
+          }
+        }
+      )
+      .subscribe()
+
+    return () => { supabase.removeChannel(channel) }
+  }, [fetchOrders])
+
+  const updateStatus = async (orderId: string, status: string) => {
+    const res = await fetch(`/api/orders/${orderId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status }),
+    })
+    if (res.ok) {
+      const { order } = await res.json() as { order: OrderRow }
+      const updated = enrichOrder(order)
+      if (updated) {
+        setOrders((prev) => prev.map((o) => o.id === orderId ? updated : o))
+      }
+    } else {
+      toast.error('Erreur lors de la mise à jour')
+    }
+  }
+
   const filtered = orders.filter((o) => {
-    const matchTab = tab === 'all' || (tab === 'active' && ['pending', 'in_progress', 'revision_requested', 'delivered'].includes(o.status)) || (tab === 'done' && ['paid', 'completed'].includes(o.status))
-    const matchSearch = o.design.title.toLowerCase().includes(search.toLowerCase()) || o.id.toLowerCase().includes(search.toLowerCase())
+    const matchTab =
+      tab === 'all' ||
+      (tab === 'active' && ['pending', 'in_progress', 'revision_requested', 'delivered'].includes(o.status)) ||
+      (tab === 'done' && ['paid', 'completed'].includes(o.status))
+    const matchSearch =
+      o.design.title.toLowerCase().includes(search.toLowerCase()) ||
+      o.id.toLowerCase().includes(search.toLowerCase())
     return matchTab && matchSearch
   })
 
-  const activeCount = orders.filter((o) => ['pending', 'in_progress', 'revision_requested', 'delivered'].includes(o.status)).length
-  const doneCount = orders.filter((o) => ['paid', 'completed'].includes(o.status)).length
+  const activeCount = orders.filter((o) =>
+    ['pending', 'in_progress', 'revision_requested', 'delivered'].includes(o.status)
+  ).length
+  const doneCount = orders.filter((o) =>
+    ['paid', 'completed'].includes(o.status)
+  ).length
+
+  if (loading) {
+    return (
+      <div className="min-h-screen pt-16 flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-primary-500/30 border-t-primary-500 rounded-full animate-spin" />
+      </div>
+    )
+  }
 
   if (orders.length === 0) {
     return (
@@ -66,28 +157,26 @@ export default function CommandesPage() {
 
       <div className="flex-1 min-w-0 py-8 px-4 md:px-6 lg:px-8">
         {/* Header */}
-        <div className="flex items-start justify-between mb-6">
+        <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
           <div>
             <h1 className="text-2xl font-black text-sand-900">Mes Commandes</h1>
             <p className="text-sm text-sand-400">Suivez l&apos;évolution de vos projets créatifs en temps réel.</p>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-sand-400" />
-              <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Rechercher une commande..."
-                className="pl-9 pr-4 py-2 text-sm border border-sand-200 rounded-xl bg-white outline-none focus:border-primary-400 w-56"
-              />
-            </div>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-sand-400" />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Rechercher une commande..."
+              className="pl-9 pr-4 py-2 text-sm border border-sand-200 rounded-xl bg-white outline-none focus:border-primary-400 w-56"
+            />
           </div>
         </div>
 
         {/* Tabs */}
         <div className="flex items-center gap-0 mb-6 border-b border-sand-200">
           {([
-            { key: 'all' as Tab, label: `Toutes les commandes (${orders.length})` },
+            { key: 'all' as Tab, label: `Toutes (${orders.length})` },
             { key: 'active' as Tab, label: `En cours (${activeCount})` },
             { key: 'done' as Tab, label: `Terminées (${doneCount})` },
           ]).map(({ key, label }) => (
@@ -108,7 +197,6 @@ export default function CommandesPage() {
           {filtered.map((order, i) => {
             const s = statusConfig[order.status] || statusConfig.pending
             const prog = progressIndex(order.status)
-            const tier = PRICING_TIERS[order.tier]
 
             return (
               <motion.div
@@ -124,8 +212,10 @@ export default function CommandesPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start gap-2 flex-wrap">
-                      <span className="badge badge-premium text-[10px]">{order.design.categorySlug.replace(/-/g, ' ').toUpperCase()}</span>
-                      <span className="text-xs text-sand-400">#{order.id}</span>
+                      <span className="badge badge-premium text-[10px]">
+                        {order.design.categorySlug.replace(/-/g, ' ').toUpperCase()}
+                      </span>
+                      <span className="text-xs text-sand-400">#{order.id.slice(0, 8)}</span>
                       <span className={`badge text-[10px] ml-auto ${s.bg} ${s.color}`}>{s.label}</span>
                     </div>
                     <div className="font-black text-sand-900 mt-1 line-clamp-1">{order.design.title}</div>
@@ -136,7 +226,7 @@ export default function CommandesPage() {
                     <div className="font-bold text-sand-900 mt-1">
                       {formatPrice(order.price)}
                       <span className="text-xs font-normal text-sand-400 ml-2">
-                        Retouches restantes : {order.maxRetouches - order.retouchesUsed}/{order.maxRetouches}
+                        Retouches : {order.retouches_used}/{order.max_retouches}
                       </span>
                     </div>
                   </div>
@@ -145,17 +235,14 @@ export default function CommandesPage() {
                 {/* Progress bar */}
                 <div className="mb-4">
                   <div className="flex items-center justify-between mb-1.5">
-                    {PROGRESS_STEPS.map((s, idx) => (
-                      <div key={s} className="flex flex-col items-center gap-1 flex-1">
+                    {PROGRESS_STEPS.map((_s, idx) => (
+                      <div key={idx} className="flex flex-col items-center flex-1">
                         <div className={`w-2 h-2 rounded-full ${idx <= prog ? 'bg-primary-500' : 'bg-sand-200'}`} />
-                        {idx < PROGRESS_STEPS.length - 1 && (
-                          <div className="sr-only" />
-                        )}
                       </div>
                     ))}
                   </div>
                   <div className="relative flex items-center">
-                    {PROGRESS_STEPS.map((_, idx) => (
+                    {PROGRESS_STEPS.map((_s, idx) => (
                       idx < PROGRESS_STEPS.length - 1 && (
                         <div key={idx} className={`flex-1 h-0.5 ${idx < prog ? 'bg-primary-500' : 'bg-sand-200'}`} />
                       )
@@ -171,14 +258,17 @@ export default function CommandesPage() {
                 </div>
 
                 {/* Actions */}
-                <div className="flex gap-2">
-                  <Link href="/messages" className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-sand-600 border border-sand-200 rounded-lg hover:border-sand-300 transition-all">
-                    <MessageSquare className="w-3.5 h-3.5" /> Ouvrir le chat
+                <div className="flex gap-2 flex-wrap">
+                  <Link
+                    href={`/messages?orderId=${order.id}`}
+                    className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-sand-600 border border-sand-200 rounded-lg hover:border-sand-300 transition-all"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5" /> Chat
                   </Link>
 
                   {order.status === 'in_progress' && (
                     <button
-                      onClick={() => updateOrderStatus(order.id, 'delivered')}
+                      onClick={() => updateStatus(order.id, 'delivered')}
                       className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold btn-primary rounded-lg"
                     >
                       <Eye className="w-3.5 h-3.5" /> Voir le design
@@ -186,28 +276,26 @@ export default function CommandesPage() {
                   )}
 
                   {order.status === 'delivered' && (
-                    <>
-                      <button
-                        onClick={() => updateOrderStatus(order.id, 'paid')}
-                        className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold btn-primary rounded-lg"
-                      >
-                        <CreditCard className="w-3.5 h-3.5" /> Valider &amp; Télécharger
-                      </button>
-                    </>
+                    <button
+                      onClick={() => updateStatus(order.id, 'paid')}
+                      className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold btn-primary rounded-lg"
+                    >
+                      <CreditCard className="w-3.5 h-3.5" /> Valider &amp; Payer
+                    </button>
                   )}
 
                   {order.status === 'paid' && (
                     <>
-                      {order.retouchesUsed < order.maxRetouches && (
+                      {order.retouches_used < order.max_retouches && (
                         <button
-                          onClick={() => updateOrderStatus(order.id, 'revision_requested')}
+                          onClick={() => updateStatus(order.id, 'revision_requested')}
                           className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-sand-600 border border-sand-200 rounded-lg hover:border-primary-300 transition-all"
                         >
-                          <RefreshCw className="w-3.5 h-3.5" /> Demander une retouche
+                          <RefreshCw className="w-3.5 h-3.5" /> Retouche
                         </button>
                       )}
                       <button className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold btn-primary rounded-lg">
-                        <Download className="w-3.5 h-3.5" /> Télécharger les sources
+                        <Download className="w-3.5 h-3.5" /> Télécharger
                       </button>
                     </>
                   )}
