@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from 'lucide-react'
+import { Eye, EyeOff, ArrowRight } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import toast from 'react-hot-toast'
 
@@ -36,6 +36,7 @@ export default function RegisterPage() {
       password: form.password,
       options: {
         data: { full_name: form.name },
+        emailRedirectTo: undefined,
       },
     })
 
@@ -45,7 +46,7 @@ export default function RegisterPage() {
       toast.error(
         error.message === 'User already registered'
           ? 'Un compte existe déjà avec cet email'
-          : error.message
+          : 'Inscription échouée : ' + error.message
       )
     } else {
       toast.success('Compte créé ! Bienvenue sur IsaliDesign 🎨')
@@ -55,7 +56,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-sand-50 flex items-center justify-center px-4 pt-16">
+    <div className="min-h-screen bg-sand-50 flex items-center justify-center px-4 pt-16 pb-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -75,59 +76,55 @@ export default function RegisterPage() {
 
         {/* Form */}
         <div className="card p-8">
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4" autoComplete="on">
             <div>
-              <label className="block text-xs font-semibold text-sand-500 uppercase tracking-wide mb-1.5">
+              <label className="block text-xs font-semibold text-sand-700 uppercase tracking-wide mb-1.5">
                 Nom complet
               </label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-sand-400" />
-                <input
-                  type="text"
-                  required
-                  placeholder="Jean Dupont"
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="input pl-10"
-                />
-              </div>
+              <input
+                type="text"
+                required
+                autoComplete="name"
+                placeholder="Jean Dupont"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                className="w-full px-4 py-3 bg-white border-2 border-sand-200 rounded-xl text-[#1A1A1A] font-medium placeholder-sand-300 focus:outline-none focus:border-primary-500 transition-colors"
+              />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-sand-500 uppercase tracking-wide mb-1.5">
+              <label className="block text-xs font-semibold text-sand-700 uppercase tracking-wide mb-1.5">
                 Adresse email
               </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-sand-400" />
-                <input
-                  type="email"
-                  required
-                  placeholder="votre@email.com"
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  className="input pl-10"
-                />
-              </div>
+              <input
+                type="email"
+                required
+                autoComplete="email"
+                placeholder="votre@email.com"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                className="w-full px-4 py-3 bg-white border-2 border-sand-200 rounded-xl text-[#1A1A1A] font-medium placeholder-sand-300 focus:outline-none focus:border-primary-500 transition-colors"
+              />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-sand-500 uppercase tracking-wide mb-1.5">
+              <label className="block text-xs font-semibold text-sand-700 uppercase tracking-wide mb-1.5">
                 Mot de passe
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-sand-400" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   required
+                  autoComplete="new-password"
                   placeholder="••••••••"
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  className="input pl-10 pr-10"
+                  className="w-full px-4 py-3 pr-12 bg-white border-2 border-sand-200 rounded-xl text-[#1A1A1A] font-medium placeholder-sand-300 focus:outline-none focus:border-primary-500 transition-colors"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-sand-400 hover:text-sand-700"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-sand-400 hover:text-sand-700"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -135,29 +132,36 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-sand-500 uppercase tracking-wide mb-1.5">
+              <label className="block text-xs font-semibold text-sand-700 uppercase tracking-wide mb-1.5">
                 Confirmer le mot de passe
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-sand-400" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   required
+                  autoComplete="new-password"
                   placeholder="••••••••"
                   value={form.confirmPassword}
                   onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
-                  className="input pl-10"
+                  className="w-full px-4 py-3 pr-12 bg-white border-2 border-sand-200 rounded-xl text-[#1A1A1A] font-medium placeholder-sand-300 focus:outline-none focus:border-primary-500 transition-colors"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-sand-400 hover:text-sand-700"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 btn-primary rounded-xl flex items-center justify-center gap-2 disabled:opacity-60"
+              className="w-full py-3.5 btn-primary rounded-xl flex items-center justify-center gap-2 disabled:opacity-60 text-base mt-2"
             >
               {loading ? (
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
                 <>Créer mon compte <ArrowRight className="w-4 h-4" /></>
               )}

@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Eye, EyeOff, Mail, Lock, ArrowRight } from 'lucide-react'
+import { Eye, EyeOff, ArrowRight } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import toast from 'react-hot-toast'
 
@@ -28,9 +28,10 @@ export default function LoginPage() {
     setLoading(false)
 
     if (error) {
-      toast.error(error.message === 'Invalid login credentials'
-        ? 'Email ou mot de passe incorrect'
-        : error.message
+      toast.error(
+        error.message === 'Invalid login credentials'
+          ? 'Email ou mot de passe incorrect'
+          : 'Connexion échouée. Vérifiez vos identifiants.'
       )
     } else {
       toast.success('Connexion réussie !')
@@ -50,7 +51,7 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-block mb-6">
             <span className="text-2xl font-black">
-              <span className="text-primary-500">Easily</span>
+              <span className="text-primary-500">Isali</span>
               <span className="text-sand-900">Design</span>
             </span>
           </Link>
@@ -60,42 +61,40 @@ export default function LoginPage() {
 
         {/* Form */}
         <div className="card p-8">
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4" autoComplete="on">
             <div>
-              <label className="block text-xs font-semibold text-sand-500 uppercase tracking-wide mb-1.5">
+              <label className="block text-xs font-semibold text-sand-700 uppercase tracking-wide mb-1.5">
                 Adresse email
               </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-sand-400" />
-                <input
-                  type="email"
-                  required
-                  placeholder="votre@email.com"
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  className="input pl-10"
-                />
-              </div>
+              <input
+                type="email"
+                required
+                autoComplete="email"
+                placeholder="votre@email.com"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                className="w-full px-4 py-3 bg-white border-2 border-sand-200 rounded-xl text-[#1A1A1A] font-medium placeholder-sand-300 focus:outline-none focus:border-primary-500 transition-colors"
+              />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-sand-500 uppercase tracking-wide mb-1.5">
+              <label className="block text-xs font-semibold text-sand-700 uppercase tracking-wide mb-1.5">
                 Mot de passe
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-sand-400" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   required
+                  autoComplete="current-password"
                   placeholder="••••••••"
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  className="input pl-10 pr-10"
+                  className="w-full px-4 py-3 pr-12 bg-white border-2 border-sand-200 rounded-xl text-[#1A1A1A] font-medium placeholder-sand-300 focus:outline-none focus:border-primary-500 transition-colors"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-sand-400 hover:text-sand-700"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-sand-400 hover:text-sand-700"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -105,10 +104,10 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 btn-primary rounded-xl flex items-center justify-center gap-2 disabled:opacity-60"
+              className="w-full py-3.5 btn-primary rounded-xl flex items-center justify-center gap-2 disabled:opacity-60 text-base mt-2"
             >
               {loading ? (
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
                 <>Se connecter <ArrowRight className="w-4 h-4" /></>
               )}
