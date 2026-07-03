@@ -1,0 +1,307 @@
+/* ============================================================
+   OPTIMUM AI — scoped design system
+   Everything is namespaced under .optimum-root so it never
+   leaks into the DiaCiss marketplace styles.
+   ============================================================ */
+
+.optimum-root {
+  --coral: #ff5757;
+  --coral-soft: #ff8a8a;
+  --rose: #ffd8d8;
+  --ink-1: #111111;
+  --ink-2: #181818;
+  --ink-3: #1d1f21;
+  --light: #f7f7f7;
+  --white: #ffffff;
+
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: 35px;
+
+  --font-display: var(--font-display), 'Arial Narrow', sans-serif;
+
+  position: relative;
+  min-height: 100vh;
+  background: var(--ink-3);
+  color: var(--white);
+  font-family: var(--font-body), 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+.optimum-root ::selection {
+  background: rgba(255, 87, 87, 0.35);
+  color: #fff;
+}
+
+/* ---------- Typography ---------- */
+.opt-display {
+  font-family: var(--font-display), 'Arial Narrow', sans-serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 0.92;
+  text-transform: uppercase;
+}
+
+.opt-sub {
+  font-family: var(--font-sub), 'Inter', sans-serif;
+}
+
+/* Eyebrow / kicker label */
+.opt-eyebrow {
+  font-family: var(--font-sub), sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  color: var(--coral);
+}
+
+/* ---------- Chromatic gradient text ---------- */
+.opt-chroma {
+  background: linear-gradient(120deg, #ffffff 0%, var(--rose) 45%, var(--coral) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* ---------- Glass surfaces ---------- */
+.opt-glass {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  border-radius: 32px;
+}
+
+.opt-glass--reduced {
+  background: rgba(255, 255, 255, 0.03);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ---------- Buttons ---------- */
+.opt-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  font-family: var(--font-sub), sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.25s ease;
+  will-change: transform;
+}
+
+.opt-btn--primary {
+  background: linear-gradient(120deg, #ff7a7a 0%, var(--coral) 55%, #ff3d3d 100%);
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(255, 87, 87, 0.35);
+}
+.opt-btn--primary:hover {
+  box-shadow: 0 14px 44px rgba(255, 87, 87, 0.55);
+}
+
+.opt-btn--ghost {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+.opt-btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.opt-btn:focus-visible,
+.optimum-root a:focus-visible,
+.optimum-root button:focus-visible {
+  outline: 2px solid var(--coral);
+  outline-offset: 3px;
+}
+
+/* ---------- Ripple (JS-driven) ---------- */
+.opt-ripple {
+  position: absolute;
+  border-radius: 9999px;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 216, 216, 0.25) 40%,
+    transparent 70%
+  );
+  animation: opt-ripple 0.6s ease-out forwards;
+  z-index: 0;
+}
+@keyframes opt-ripple {
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
+
+/* ---------- Custom cursor ---------- */
+.opt-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: rgba(255, 87, 87, 0.9);
+  box-shadow: 0 0 18px 4px rgba(255, 87, 87, 0.55);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: screen;
+}
+.opt-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 87, 87, 0.5);
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+}
+
+/* ---------- Background layers ---------- */
+.opt-grid {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 30%, transparent 75%);
+}
+
+.opt-noise {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+}
+
+/* ---------- Reveal on scroll (fallback pre-JS) ---------- */
+.opt-reveal-init {
+  opacity: 0;
+  filter: blur(14px);
+  transform: translateY(28px) scale(0.98);
+}
+
+/* ---------- Reading-glass hover (JS sets --mx/--my/--active) ---------- */
+.opt-read {
+  position: relative;
+}
+.opt-read::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: var(--rg-active, 0);
+  transition: opacity 0.25s ease;
+  background: radial-gradient(
+    220px circle at var(--rg-x, 50%) var(--rg-y, 50%),
+    rgba(255, 255, 255, 0.14),
+    rgba(255, 87, 87, 0.06) 45%,
+    transparent 70%
+  );
+}
+
+/* ---------- Subtle glitch (logo / big titles on hover) ---------- */
+.opt-glitch {
+  position: relative;
+}
+.opt-glitch::before,
+.opt-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  clip-path: inset(0 0 0 0);
+}
+.opt-glitch:hover::before {
+  opacity: 0.7;
+  color: #ff5757;
+  animation: opt-glitch-x 0.15s steps(2) 1;
+}
+.opt-glitch:hover::after {
+  opacity: 0.7;
+  color: #7ad7ff;
+  animation: opt-glitch-x 0.15s steps(2) reverse 1;
+}
+@keyframes opt-glitch-x {
+  0% {
+    transform: translate(0, 0);
+    clip-path: inset(0 0 60% 0);
+  }
+  50% {
+    transform: translate(-2px, 1px);
+    clip-path: inset(50% 0 0 0);
+  }
+  100% {
+    transform: translate(2px, -1px);
+    clip-path: inset(0 0 40% 0);
+  }
+}
+
+/* Marquee for logos / ticker */
+@keyframes opt-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.opt-marquee {
+  animation: opt-marquee 32s linear infinite;
+}
+
+/* Soft float used by ambient orbs */
+@keyframes opt-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-18px);
+  }
+}
+
+/* ---------- Reduced motion: kill everything non-essential ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .optimum-root *,
+  .optimum-root *::before,
+  .optimum-root *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .opt-reveal-init {
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+  }
+}
+
+/* Hide native cursor only on fine pointers (desktop) */
+@media (hover: hover) and (pointer: fine) {
+  .optimum-root.opt-cursor-on,
+  .optimum-root.opt-cursor-on * {
+    cursor: none;
+  }
+}
